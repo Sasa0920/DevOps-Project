@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  frontend: 
+    build: ./frontend
+    ports:
+      - "5173:5173" 
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+    command: npm run dev -- --host
+
+  backend: 
+    build: ./backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydb
+      - JWT_SECRET=your_jwt_secret
+    depends_on:
+      - mongo
+    stdin_open: true
+    tty: true
+
+  mongo:
+    image: mongo:6
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
