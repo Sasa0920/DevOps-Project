@@ -34,11 +34,11 @@ pipeline{
       steps{
         script{
           try{
-            sh'docker-compose up --build -d'
+            sh'docker compose up --build -d'
             sh'sleep 30'
             sh'curl -f http://localhost:5000/api/debug/users'
           } finally{
-            sh'docker-compose down'
+            sh'docker compose down'
           }
         }
       }
