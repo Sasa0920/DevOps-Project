@@ -12,26 +12,26 @@ pipeline{
         git branch: 'main', url:'https://github.com/Sasa0920/DevOps-Project.git'
       }
     }
+    stage('Build Docker Images'){
+      parallel{
+        stage('Build Backend Image'){
+          steps{
+            script{
+              sh'docker build -t fooddelivery-backend:${IMAGE_TAG} -f backend/Dockerfile ./backend'
+            }
+          }
+        }
+        stage('Build Frontend Image'){
+          steps{
+            script{
+              sh'docker build -t fooddelivery-frontend:${IMAGE_TAG} -f frontend/Dockerfile ./frontend'
+            }
+          }
+        }
+      }
+    }
   }
-  //   stage('Build Docker Images'){
-  //     parallel{
-  //       stage('Build Backend Image'){
-  //         steps{
-  //           script{
-  //             sh'docker build -t fooddelivery-backend:${IMAGE_TAG} -f backend/Dockerfile ./backend'
-  //           }
-  //         }
-  //       }
-  //       stage('Build Frontend Image'){
-  //         steps{
-  //           script{
-  //             sh'docker build -t fooddelivery-frontend:${IMAGE_TAG} -f frontend/Dockerfile ./frontend'
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  //   stage('Test'){
+  //  stage('Test'){
   //     steps{
   //       script{
   //         try{
