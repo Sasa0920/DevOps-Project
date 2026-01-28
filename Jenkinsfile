@@ -30,20 +30,20 @@ pipeline{
         }
       }
     }
+   stage('Test'){
+      steps{
+        script{
+          try{
+            sh'docker-compose up --build -d'
+            sh'sleep 30'
+            sh'curl -f http://localhost:5000/api/debug/users'
+          } finally{
+            sh'docker-compose down'
+          }
+        }
+      }
+    }
   }
-  //  stage('Test'){
-  //     steps{
-  //       script{
-  //         try{
-  //           sh'docker-compose up --build -d'
-  //           sh'sleep 30'
-  //           sh'curl -f http://localhost:5000/api/debug/users'
-  //         } finally{
-  //           sh'docker-compose down'
-  //         }
-  //       }
-  //     }
-  //   }
   //   stage('Login to the Docker Hub'){
   //     steps{
   //       withCredentials([string(credentialsId: 'fooddelivery_dockerhubpassword', variable: 'fooddelivery_dockerhubpassword')]) {
