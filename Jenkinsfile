@@ -50,27 +50,26 @@ pipeline{
         }
       }
     }
-  }
-  //   stage('Push Images to Docker Hub'){
-  //     steps{
-  //       script{
-  //         sh'docker tag boardease-backend:${IMAGE_TAG} himanshadewmin/boardease-backend:${IMAGE_TAG}'
-  //         sh'docker tag boardease-frontend:${IMAGE_TAG} himanshadewmin/boardease-frontend:${IMAGE_TAG}'
-  //         sh'docker push himanshadewmin/boardease-backend:${IMAGE_TAG}'
-  //         sh'docker push himanshadewmin/boardease-frontend:${IMAGE_TAG}'
+    stage('Push Images to Docker Hub'){
+      steps{
+        script{
+          sh'docker tag boardease-backend:${IMAGE_TAG} himanshadewmin/boardease-backend:${IMAGE_TAG}'
+          sh'docker tag boardease-frontend:${IMAGE_TAG} himanshadewmin/boardease-frontend:${IMAGE_TAG}'
+          sh'docker push himanshadewmin/boardease-backend:${IMAGE_TAG}'
+          sh'docker push himanshadewmin/boardease-frontend:${IMAGE_TAG}'
 
-  //         sh'docker tag boardease-backend:${IMAGE_TAG} himanshadewmin/boardease-backend:latest'
-  //         sh'docker tag boardease-frontend:${IMAGE_TAG} himanshadewmin/boardease-frontend:latest'
-  //         sh'docker push himanshadewmin/boardease-backend:latest'
-  //         sh'docker push himanshadewmin/boardease-frontend:latest'
-  //       }
-  //     }
-  //   }
-  // }
-  // post{
-  //   always{
-  //     sh'docker system prune -f' // clean up unused docker resources
-  //     sh'docker logout'
-  //   }
-  // }
+          sh'docker tag boardease-backend:${IMAGE_TAG} himanshadewmin/boardease-backend:latest'
+          sh'docker tag boardease-frontend:${IMAGE_TAG} himanshadewmin/boardease-frontend:latest'
+          sh'docker push himanshadewmin/boardease-backend:latest'
+          sh'docker push himanshadewmin/boardease-frontend:latest'
+        }
+      }
+    }
+  }
+  post{
+    always{
+      sh'docker system prune -f' // clean up unused docker resources
+      sh'docker logout'
+    }
+  }
 }
