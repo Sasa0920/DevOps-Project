@@ -43,15 +43,14 @@ pipeline{
         }
       }
     }
+    stage('Login to the Docker Hub'){
+      steps{
+        withCredentials([string(credentialsId: 'fooddelivery_dockerhubpassword', variable: 'fooddelivery_dockerhubpassword')]) {
+          sh 'docker login -u sasanthi20020920 -p $fooddelivery_dockerhubpassword'
+        }
+      }
+    }
   }
-  //   stage('Login to the Docker Hub'){
-  //     steps{
-  //       withCredentials([string(credentialsId: 'fooddelivery_dockerhubpassword', variable: 'fooddelivery_dockerhubpassword')]) {
-  //         sh 'docker login -u sasanthi20020920 -p $fooddelivery_dockerhubpassword'
-  //       }
-  //     }
-  //   }
-    
   //   stage('Push Images to Docker Hub'){
   //     steps{
   //       script{
