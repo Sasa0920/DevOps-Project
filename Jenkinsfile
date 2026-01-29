@@ -53,15 +53,15 @@ pipeline{
     stage('Push Images to Docker Hub'){
       steps{
         script{
-          sh'docker tag boardease-backend:${IMAGE_TAG} himanshadewmin/boardease-backend:${IMAGE_TAG}'
-          sh'docker tag boardease-frontend:${IMAGE_TAG} himanshadewmin/boardease-frontend:${IMAGE_TAG}'
-          sh'docker push himanshadewmin/boardease-backend:${IMAGE_TAG}'
-          sh'docker push himanshadewmin/boardease-frontend:${IMAGE_TAG}'
+          sh'docker tag fooddelivery-backend:${IMAGE_TAG} sasanthi20020920/fooddelivery-backend:${IMAGE_TAG}'
+          sh'docker tag fooddelivery-frontend:${IMAGE_TAG} sasanthi20020920/fooddelivery-frontend:${IMAGE_TAG}'
+          sh'docker push sasanthi20020920/fooddelivery-backend:${IMAGE_TAG}'
+          sh'docker push sasanthi20020920/fooddelivery-frontend:${IMAGE_TAG}'
 
-          sh'docker tag boardease-backend:${IMAGE_TAG} himanshadewmin/boardease-backend:latest'
-          sh'docker tag boardease-frontend:${IMAGE_TAG} himanshadewmin/boardease-frontend:latest'
-          sh'docker push himanshadewmin/boardease-backend:latest'
-          sh'docker push himanshadewmin/boardease-frontend:latest'
+          sh'docker tag fooddelivery-backend:${IMAGE_TAG} sasanthi20020920/fooddelivery-backend:latest'
+          sh'docker tag fooddelivery-frontend:${IMAGE_TAG} sasanthi20020920/fooddelivery-frontend:latest'
+          sh'docker push sasanthi20020920/fooddelivery-backend:latest'
+          sh'docker push sasanthi20020920/fooddelivery-frontend:latest'
         }
       }
     }
