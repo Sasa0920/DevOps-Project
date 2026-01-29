@@ -226,8 +226,14 @@ mongoose.connect('mongodb://mongo:27017/mydb')
       }
     ];
 
-    await Meal.deleteMany({});
-    await Meal.insertMany(meals);
+    await Promise.all(
+      meals.map(async m => {
+        const exists = await Meal.exists({ name: m.name });
+        if (!exists) await Meal.create(m);
+      })
+);
+
+
     console.log('Meals inserted');
     mongoose.disconnect();
   })
