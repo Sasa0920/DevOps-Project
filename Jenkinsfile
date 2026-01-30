@@ -112,19 +112,31 @@ pipeline {
     }
 
     stage('Deploy Container on EC2') {
-      steps {
-        sshagent(['ec2-key']) {  
-          sh """
-            ssh -o StrictHostKeyChecking=no ubuntu@<EC2_PUBLIC_IP> '
-              docker pull $ECR_URI:latest
-              docker stop \$(docker ps -q --filter ancestor=$ECR_URI:latest) || true
-              docker rm \$(docker ps -a -q --filter ancestor=$ECR_URI:latest) || true
-              docker run -d -p 80:3000 $ECR_URI:latest
-            '
-          """
+        steps {
+          dir('terraform') {
+            script {
+             
+              env.EC2_IP = sh(
+                script: "terraform output -raw ec2_public_ip",
+                returnStdout: true
+              ).trim()
+            }
+          }
+
+         
+          sshagent(['ec2-key']) {
+            sh """
+              ssh -o StrictHostKeyChecking=no ubuntu@$EC2_IP '
+                docker pull $ECR_URI:latest
+                docker stop \$(docker ps -q --filter ancestor=$ECR_URI:latest) || true
+                docker rm \$(docker ps -a -q --filter ancestor=$ECR_URI:latest) || true
+                docker run -d -p 80:3000 $ECR_URI:latest
+              '
+            """
+          }
         }
       }
-    }
+
 
 
 
