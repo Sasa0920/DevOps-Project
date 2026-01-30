@@ -125,13 +125,14 @@ pipeline {
               cd ~/DevOps-Project || git clone https://github.com/Sasa0920/DevOps-Project.git ~/DevOps-Project && cd ~/DevOps-Project
               docker pull 754441011337.dkr.ecr.ap-south-1.amazonaws.com/fooddelivery-backend:latest
               docker pull sasanthi20020920/fooddelivery-frontend:latest
-              docker compose -f docker-compose.deploy.yml down || true
-              docker compose -f docker-compose.deploy.yml up -d --build
+              docker-compose -f docker-compose.deploy.yml down || true
+              docker-compose -f docker-compose.deploy.yml up -d --build
             '
           """
         }
       }
     }
+
 
 
   }
