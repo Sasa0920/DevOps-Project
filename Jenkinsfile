@@ -98,6 +98,18 @@ pipeline {
         '''
       }
     }
+    
+
+    stage('Terraform Apply') {
+      steps {
+        dir('terraform') {
+          sh '''
+          terraform init
+          terraform apply -auto-approve -var="ecr_uri=$ECR_URI"
+          '''
+        }
+      }
+    }
     stage('Deploy Container on EC2') {
       steps {
         sshagent(['ec2-key']) {  
@@ -113,17 +125,6 @@ pipeline {
       }
     }
 
-
-    stage('Terraform Apply') {
-      steps {
-        dir('terraform') {
-          sh '''
-          terraform init
-          terraform apply -auto-approve -var="ecr_uri=$ECR_URI"
-          '''
-        }
-      }
-    }
   }
 
   post {
