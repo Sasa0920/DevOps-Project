@@ -36,6 +36,9 @@ pipeline {
     stage('Test') {
       steps {
         script {
+          sh 'docker compose down || true'
+          sh 'docker rm -f $(docker ps -aq) || true'
+
           try {
             sh 'docker compose up --build -d'
             sh 'sleep 30'
@@ -46,6 +49,7 @@ pipeline {
         }
       }
     }
+
 
     stage('Login to AWS ECR') {
       steps {
