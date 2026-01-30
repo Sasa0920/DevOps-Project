@@ -121,7 +121,7 @@ pipeline {
           }
         }
         sh """
-          ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/my-key.pem ubuntu@$EC2_IP '
+          ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/devops-key.pem ubuntu@$EC2_IP '
             docker pull $ECR_URI:latest
             docker stop \$(docker ps -q --filter ancestor=$ECR_URI:latest) || true
             docker rm \$(docker ps -a -q --filter ancestor=$ECR_URI:latest) || true
