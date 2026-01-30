@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  backend:
+    image: 754441011337.dkr.ecr.ap-south-1.amazonaws.com/fooddelivery-backend:latest
+    container_name: backend
+    ports:
+      - "5000:5000"      
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydb
+      - JWT_SECRET=your_jwt_secret
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  frontend:
+    image: sasanthi20020920/fooddelivery-frontend:latest
+    container_name: frontend
+    ports:
+      - "80:5173"       
+    depends_on:
+      - backend
+    restart: unless-stopped

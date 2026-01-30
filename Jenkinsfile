@@ -111,33 +111,27 @@ pipeline {
       }
     }
 
-    stage('Deploy Container on EC2') {
-        steps {
-          dir('terraform') {
-            script {
-             
-              env.EC2_IP = sh(
-                script: "terraform output -raw ec2_public_ip",
-                returnStdout: true
-              ).trim()
-            }
-          }
-
-         
-          sshagent(['ec2-key']) {
-            sh """
-              ssh -o StrictHostKeyChecking=no ubuntu@$EC2_IP '
-                docker pull $ECR_URI:latest
-                docker stop \$(docker ps -q --filter ancestor=$ECR_URI:latest) || true
-                docker rm \$(docker ps -a -q --filter ancestor=$ECR_URI:latest) || true
-                docker run -d -p 80:3000 $ECR_URI:latest
-              '
-            """
+    stage('Deploy Full Project on EC2') {
+      steps {
+        dir('terraform') {
+          script {
+            env.EC2_IP = sh(script: "terraform output -raw ec2_public_ip", returnStdout: true).trim()
           }
         }
+
+        sshagent(['ec2-key']) {
+          sh """
+            ssh -o StrictHostKeyChecking=no ubuntu@$EC2_IP '
+              cd ~/DevOps-Project || git clone https://github.com/Sasa0920/DevOps-Project.git ~/DevOps-Project && cd ~/DevOps-Project
+              docker pull 754441011337.dkr.ecr.ap-south-1.amazonaws.com/fooddelivery-backend:latest
+              docker pull sasanthi20020920/fooddelivery-frontend:latest
+              docker compose -f docker-compose.deploy.yml down || true
+              docker compose -f docker-compose.deploy.yml up -d --build
+            '
+          """
+        }
       }
-
-
+    }
 
 
   }
