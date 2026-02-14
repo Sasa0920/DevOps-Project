@@ -42,7 +42,7 @@ pipeline {
           try {
             sh 'docker compose up --build -d'
             sh 'sleep 30'
-            sh 'curl -f http://localhost:5000/'
+            sh 'curl -f http://13.233.193.122:5000/'
           } finally {
             sh 'docker compose down'
           }

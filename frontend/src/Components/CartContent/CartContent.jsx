@@ -8,14 +8,14 @@ const CartContent = () => {
   const [cart, setCart] = useState({ items: [] });
 
   const fetchCart = () => {
-    fetch('http://localhost:5000/cart')
+    fetch('http://13.233.193.122:5000/cart')
       .then(res => res.json())
       .then(setCart)
       .catch(console.error);
   };
 
   const updateQuantity = (mealId, quantity) => {
-    fetch('http://localhost:5000/cart/update', {
+    fetch('http://13.233.193.122:5000/cart/update', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mealId, quantity })
@@ -23,7 +23,7 @@ const CartContent = () => {
   };
 
   const deleteItem = (mealId) => {
-    fetch(`http://localhost:5000/cart/remove/${mealId}`, {
+    fetch(`http://13.233.193.122:5000/cart/remove/${mealId}`, {
       method: 'DELETE'
     }).then(fetchCart);
   };
