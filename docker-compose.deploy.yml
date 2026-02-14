@@ -1,27 +1,33 @@
+version: "3.8"
+
 services:
-  frontend:
-    build: ./frontend
+  frontend: 
+    image: sasanthi20020920/fooddelivery-frontend:latest
+    container_name: frontend
     ports:
-      - "80:5173"
+      - "5173:5173" 
     depends_on:
       - backend
-    command: npm run dev -- --host
 
-  backend:
-    build: ./backend
+  backend: 
+    image: 754441011337.dkr.ecr.ap-south-1.amazonaws.com/fooddelivery-backend:latest
+    container_name: backend
     ports:
       - "5000:5000"
     environment:
-      MONGO_URI: mongodb://mongo:27017/mydb
-      JWT_SECRET: your_jwt_secret
+      - MONGO_URI=mongodb://mongo:27017/mydb
+      - JWT_SECRET=your_jwt_secret  # Remind her to put her real secret here!
     depends_on:
       - mongo
 
   mongo:
-    image: mongo:6
+    image: mongo:6.0
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
     volumes:
       - mongo_data:/data/db
 
-# volumes must be at the root, aligned with services
 volumes:
   mongo_data:

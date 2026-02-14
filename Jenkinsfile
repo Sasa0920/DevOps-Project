@@ -8,10 +8,11 @@ pipeline {
 
     AWS_REGION = "ap-south-1"
     ECR_URI = "754441011337.dkr.ecr.ap-south-1.amazonaws.com/fooddelivery-backend"
+    
+    EC2_IP = "13.233.193.122" 
   }
 
   stages {
-
     stage('Checkout') {
       steps {
         git branch: 'main', url: 'https://github.com/Sasa0920/DevOps-Project.git'
@@ -38,7 +39,6 @@ pipeline {
         script {
           sh 'docker compose down || true'
           sh 'docker rm -f $(docker ps -aq) || true'
-
           try {
             sh 'docker compose up --build -d'
             sh 'sleep 30'
@@ -49,7 +49,6 @@ pipeline {
         }
       }
     }
-
 
     stage('Login to AWS ECR') {
         steps {
@@ -62,14 +61,11 @@ pipeline {
                 aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
                 aws configure set default.region $AWS_REGION
 
-                aws ecr get-login-password --region $AWS_REGION |
-                docker login --username AWS --password-stdin $ECR_URI
+                aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_URI
                 '''
             }
         }
     }
-
-
 
     stage('Push Backend Image to ECR') {
       steps {
@@ -98,44 +94,36 @@ pipeline {
         '''
       }
     }
-    
-
-    stage('Terraform Apply') {
-      steps {
-        dir('terraform') {
-          sh '''
-          terraform init
-          terraform apply -auto-approve -var="ecr_uri=$ECR_URI"
-          '''
-        }
-      }
-    }
 
     stage('Deploy Full Project on EC2') {
       steps {
-        dir('terraform') {
-          script {
-            env.EC2_IP = sh(script: "terraform output -raw ec2_public_ip", returnStdout: true).trim()
+        withCredentials([
+            string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+            string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+        ]) {
+          sshagent(['ec2-key']) {
+            sh """
+              # Jenkins gets the ECR login password
+              aws configure set aws_access_key_id \$AWS_ACCESS_KEY_ID
+              aws configure set aws_secret_access_key \$AWS_SECRET_ACCESS_KEY
+              aws configure set default.region ${AWS_REGION}
+              ECR_PASS=\$(aws ecr get-login-password --region ${AWS_REGION})
+
+              # Jenkins logs into EC2 securely and deploys
+              ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "
+                echo '\$ECR_PASS' | sudo docker login --username AWS --password-stdin ${ECR_URI}
+                cd ~/DevOps-Project || git clone https://github.com/Sasa0920/DevOps-Project.git ~/DevOps-Project
+                cd ~/DevOps-Project
+                git pull origin main
+                sudo docker compose -f docker-compose.deploy.yml pull
+                sudo docker compose -f docker-compose.deploy.yml up -d --force-recreate
+                sudo docker image prune -a -f
+              "
+            """
           }
-        }
-
-        sshagent(['ec2-key']) {
-          sh """
-            ssh -o StrictHostKeyChecking=no ubuntu@$EC2_IP '
-              cd ~/DevOps-Project || git clone https://github.com/Sasa0920/DevOps-Project.git ~/DevOps-Project && cd ~/DevOps-Project
-              docker pull 754441011337.dkr.ecr.ap-south-1.amazonaws.com/fooddelivery-backend:latest
-              docker pull sasanthi20020920/fooddelivery-frontend:latest
-              docker compose -f docker-compose.deploy.yml down || true
-              docker compose -f docker-compose.deploy.yml up -d --build
-
-            '
-          """
         }
       }
     }
-
-
-
   }
 
   post {

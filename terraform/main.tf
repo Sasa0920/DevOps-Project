@@ -10,14 +10,28 @@ resource "aws_security_group" "app_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # HTTP open to internet
+    cidr_blocks = ["0.0.0.0/0"]  
   }
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # SSH open (optional: restrict your IP)
+    cidr_blocks = ["0.0.0.0/0"]  
+  }
+
+  ingress {
+    from_port   = 5173
+    to_port     = 5173
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -39,16 +53,10 @@ resource "aws_instance" "app_server" {
   # User data script runs on EC2 startup
   user_data = <<EOF
 #!/bin/bash
-sudo apt update
-sudo apt install docker.io -y
-sudo systemctl start docker
-sudo usermod -aG docker ubuntu
-
-# Login to ECR
-aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${var.ecr_uri}
-
-# Pull and run Docker image
-docker pull ${var.ecr_uri}:latest
-docker run -d -p 80:3000 ${var.ecr_uri}:latest
+  sudo apt-get update -y
+  sudo apt-get install docker.io docker-compose -y
+  sudo systemctl start docker
+  sudo systemctl enable docker
+  sudo usermod -aG docker ubuntu
 EOF
 }
