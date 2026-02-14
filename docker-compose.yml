@@ -34,8 +34,8 @@ services:
 
   mongo:
     image: mongo:6
-    #ports:
-    # - "27019:27017"
+    ports:                  # <--- Make sure this is here!
+      - "27017:27017"
     volumes:
       - mongo_data:/data/db
 
