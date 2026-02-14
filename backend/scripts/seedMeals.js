@@ -226,12 +226,15 @@ mongoose.connect('mongodb://mongo:27017/mydb')
       }
     ];
 
-    await Promise.all(
+   await Promise.all(
       meals.map(async m => {
-        const exists = await Meal.exists({ name: m.name });
-        if (!exists) await Meal.create(m);
+        await Meal.findOneAndUpdate(
+          { name: m.name }, 
+          m, 
+          { upsert: true, new: true } 
+        );
       })
-);
+    );
 
 
     console.log('Meals inserted');
