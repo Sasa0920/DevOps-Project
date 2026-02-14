@@ -14,7 +14,7 @@ const Login = ({ onLoginSuccess }) => {
     }
 
     try {
-      const API = import.meta.env.VITE_API_URL;
+      const API = "http://13.233.193.122:5000";
 
       const res = await fetch(`${API}/api/auth/login`, {
         method: "POST",
