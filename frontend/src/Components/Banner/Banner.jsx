@@ -13,7 +13,7 @@ const Banner = () => {
       <img src={hero} alt='Banner' className="w-full h-screen object-cover" />
       <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-start text-left px-12 md:px-32 text-white">
         <h1 className="text-5xl md:text-6xl font-bold text-yellow-100 font-serif leading-[1.4] md:leading-[1.5] mb-2">
-          Hungry?<br />We’re Already<br/> on the Way.
+          Sasanthi?<br />We’re Already<br/> on the Way.
         </h1>
         <p className="text-xl md:text-2xl font-serif text-yellow-100">
           Delicious Starts with Us<br />From Kitchen to Door in 60 Minutes Flat.
