@@ -1,6 +1,6 @@
 # 🍔 EatZone - Full-Stack Food Delivery Web Application
 
-<img width="1873" height="910" alt="ss" src="https://github.com/user-attachments/assets/76a5b990-6377-4c19-9bce-24e3c240936d" />
+![i](https://github.com/user-attachments/assets/c7228faf-42c3-4697-9347-47c4fe95958a)
 
 EatZone is a modern full-stack food delivery web application developed as part of the **Web Application Development** module. Built using the **MERN Stack (MongoDB, Express.js, React.js, Node.js)** with **Vite** for a fast frontend experience, EatZone offers a seamless and interactive food ordering platform for users.
 
